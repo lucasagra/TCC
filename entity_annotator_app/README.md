@@ -15,12 +15,6 @@ This command will create a new directory called env in your project directory th
 source env/bin/activate
 ```
 
-3.1 - Command to leave the virtual environment.
-
-```
-deactivate
-```
-
 4 - Install Node.js and npm inside the virtual environment by running the following command:
 ```
 sudo npm install -g n
@@ -52,3 +46,8 @@ This command will install the Express web framework, the Body Parser middleware 
 node app.js
 ```
 
+3.1 - Command to leave the virtual environment.
+
+```
+deactivate
+```
