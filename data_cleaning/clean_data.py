@@ -5,9 +5,7 @@ import re
 with open('extracted_data.json', 'r') as f:
     data = json.load(f)
 
-    # Erase unnecessary /n's 
     for item in data:
-
         # Remove useless characters.
         item['report'] = re.sub(r"\xa0", "", item['report'])
         item['report'] = re.sub(r"\u3000", "", item['report'])
