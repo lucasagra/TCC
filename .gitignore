@@ -1,0 +1,8 @@
+# Ignore dataset
+*.csv
+*.json
+
+!entities.json
+
+# Ignore environment-specific files
+./env

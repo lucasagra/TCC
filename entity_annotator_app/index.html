@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Entity Annotator</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+	<h1>Entity Annotator</h1>
+	<div class="container">
+        <text>Instructions: <li>Highlight the section to annotate</li> <li>Select the entity</li> <li>Submit</li></text>
+        <text>Warning: the 'Undo' stack is lost when the page is reloaded.</text>
+		<h2>Documents</h2>
+		<div id="documentListContainer">
+            <ul id="documentList"></ul>
+            <input type="checkbox" class="document-color-checkbox">
+        </div>
+        <div id="documentViewer"></div>
+		<div id="entitySelector">
+			<label for="entities">Select Entity:</label>
+			<select id="entities"></select>
+		</div>
+		<button id="undoButton" disabled>Undo</button>
+		<button id="submitButton" disabled>Submit</button>
+	</div>
+	<script src="script.js"></script>
+</body>
+</html>

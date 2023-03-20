@@ -1,0 +1,89 @@
+body {
+	margin: 0;
+	padding: 0;
+	font-family: Arial, sans-serif;
+}
+
+h1, h2 {
+	margin: 0;
+	padding: 10px;
+	background-color: #4CAF50;
+	color: white;
+}
+
+ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+li:documentListContainer {
+	padding: 10px;
+	background-color: #f2f2f2;
+	cursor: pointer;
+}
+
+li:documentListContainer:hover {
+	background-color: #ddd;
+}
+
+.container {
+	padding: 10px;
+}
+
+#documentViewer {
+	margin: 10px 0;
+	padding: 10px;
+	background-color: #fff;
+	border: 1px solid #ddd;
+}
+
+#annotationSelector {
+	margin: 10px 0;
+}
+
+#annotations {
+	margin-left: 10px;
+}
+
+
+#submitButton {
+	margin: 10px 0;
+	padding: 10px 20px;
+	background-color: #4CAF50;
+	color: white;
+}
+
+#submitButton:disabled {
+	background-color: gray;
+	color: white;
+}
+#undoButton {
+	margin: 10px 0;
+	padding: 10px 20px;
+	background-color: #af574c;
+	color: white;
+}
+#undoButton:disabled {
+	background-color: gray;
+	color: white;
+}
+
+#documentListContainer {
+  resize: vertical; /* Allow vertical resizing */
+  height: 250px;
+  overflow-y: scroll;
+}
+
+#documentList li {
+  cursor: pointer;
+  padding: 5px;
+}
+
+#documentList li:hover {
+  background-color: #f5f5f5;
+}
+
+#documentList li.selected {
+  background-color: #ddd;
+}
