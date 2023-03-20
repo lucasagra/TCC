@@ -2,7 +2,14 @@
 ![gif](https://github.com/lucasagra/TCC/blob/main/entity_annotator_app/website-annotator.gif)
 
 # Instructions
-1 - Create a new directory for your project and navigate to it in the terminal.
+1 - Clone the repository
+```
+git clone https://github.com/lucasagra/TCC.git
+```
+
+```
+cd TCC/entity_annotator_app
+```
 
 2 - Create a new Python virtual environment by running the following command:
 
