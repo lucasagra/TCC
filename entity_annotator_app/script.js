@@ -104,6 +104,7 @@ let selectedRange = null;
 // listen for text selection.
 documentViewer.addEventListener("mouseup", () => {
 	selectedRange = window.getSelection().getRangeAt(0);
+	// Enable button if there's something highlighted.
 	if (selectedRange.endOffset - selectedRange.startOffset > 0) {
 		submitButton.disabled = false;
 	} else {
@@ -115,6 +116,10 @@ documentViewer.addEventListener("mouseup", () => {
 const submitButton = document.getElementById("submitButton");
 submitButton.addEventListener("click", () => {
 	if (!submitButton.disabled) {
+		// Save last state.
+		statefulStack[currentDoc.id].push(currentDoc.report);
+
+		// Update HTML.
 		const selectedText = selectedRange.toString();
 		const entityText = `[${selectedEntity}](${selectedText})`;
 		selectedRange.deleteContents();
@@ -122,7 +127,7 @@ submitButton.addEventListener("click", () => {
 		selectedRange.collapse();
 		selectedRange = null;
 
-		statefulStack[currentDoc.id].push(currentDoc.report);
+		// Update current state with HTML text.
 		currentDoc.report = document.getElementById("documentViewer").textContent;	
 
 		submitButton.disabled = true
@@ -143,10 +148,12 @@ submitButton.addEventListener("click", () => {
 				}	
 				console.log("Successfully saved doc.")
 			} else {
-				document.getElementById("documentViewer").textContent = statefulStack[currentDoc.id].pop();	
-				currentDoc.report = document.getElementById("documentViewer").textContent
+				const lastState = statefulStack[currentDoc.id].pop();	
+				// Undo html changes replacing with last saved state.
+				document.getElementById("documentViewer").textContent = lastState;
+				// Replace current state with last saved state.
+				currentDoc.report = lastState;
 				console.log(error)
-
 			}
 		  })
 		  .catch(error => {
@@ -158,6 +165,7 @@ submitButton.addEventListener("click", () => {
 // Listen for undo button click.
 const undoButton = document.getElementById("undoButton");
 undoButton.addEventListener("click", () => {
+	// Update current state with last state.
 	currentDoc.report = statefulStack[currentDoc.id].pop()
 
 	fetch('/save', {
@@ -172,9 +180,11 @@ undoButton.addEventListener("click", () => {
 	  }) 
 	  .then(response => {
 		if (response.ok) {
+			// Update html with last state.
 			document.getElementById("documentViewer").textContent = currentDoc.report;
 			console.log("Successfully saved doc.")
 		} else {
+			// Save last state back into the stack.
 			statefulStack[currentDoc.id].push(currentDoc.report)
 			console.log(error)
 		}
@@ -182,6 +192,6 @@ undoButton.addEventListener("click", () => {
 	  .catch(error => {
 		console.log(error)
 	  });
-
+	// Disable undo button if there isn't any saved state.
 	if (statefulStack[currentDoc.id].length <= 0) undoButton.disabled = true;
 });
