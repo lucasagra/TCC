@@ -15,9 +15,15 @@ This command will create a new directory called env in your project directory th
 source env/bin/activate
 ```
 
+3.1 - Command to leave the virtual environment.
+
+```
+deactivate
+```
+
 4 - Install Node.js and npm inside the virtual environment by running the following command:
 ```
-npm install -g n
+sudo npm install -g n
 n latest 
 ```
 
@@ -35,12 +41,12 @@ npm -v
 7 - Install the required Node.js dependencies for your project by running the following command:
 
 ```
-npm install express body-parser fs --save
+sudo npm install express body-parser fs --save
 ```
 
 This command will install the Express web framework, the Body Parser middleware for parsing JSON data, and the fs module for reading and writing files, and add them as dependencies to your package.json file.
 
-8 - un the server using the following command:
+8 - Run the server using the following command:
 
 ```
 node app.js
