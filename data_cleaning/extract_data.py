@@ -2,7 +2,7 @@ import csv
 import json
 
 # Open the CSV file
-with open('../laudo_original.csv', 'r') as csv_file:
+with open('original_reports.csv', 'r') as csv_file:
     # Read the contents of the CSV file
     csv_contents = csv.reader(csv_file)
     # Skip the header row
