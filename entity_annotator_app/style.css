@@ -17,7 +17,7 @@ ul {
 	padding: 0;
 }
 
-li:documentListContainer {
+/* li:documentListContainer {
 	padding: 10px;
 	background-color: #f2f2f2;
 	cursor: pointer;
@@ -25,7 +25,7 @@ li:documentListContainer {
 
 li:documentListContainer:hover {
 	background-color: #ddd;
-}
+} */
 
 .container {
 	padding: 10px;
@@ -85,5 +85,5 @@ li:documentListContainer:hover {
 }
 
 #documentList li.selected {
-  background-color: #ddd;
+  background-color: #d7d7d7;
 }

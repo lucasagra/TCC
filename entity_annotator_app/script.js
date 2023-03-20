@@ -1,6 +1,7 @@
 let currentDoc = null;
 let selectedEntity = null;
 let statefulStack = {}
+let selectedListItem = null;
 
 function configureCheckbox(doc) {
 	checkbox = document.createElement("input");
@@ -19,8 +20,9 @@ function configureCheckbox(doc) {
 			})
 		}) 
 		.then(response => {
-			if (response.ok) {		
-				console.log("Successfully checked.")
+			if (response.ok) {
+				if (this.checked) console.log("Successfully checked.");
+				else console.log("Successfully unchecked.");
 			} else {
 				console.log(error)
 			}
@@ -48,6 +50,11 @@ function configureListItem(doc, index) {
 			.then(response => {
 				documentViewer.innerText = response.report;
 				currentDoc = {...response, index: index};
+				if (selectedListItem != null) {
+					selectedListItem.classList.remove("selected");
+				}
+				listItem.classList.add("selected");
+				selectedListItem = listItem;
 				if (currentDoc != null && statefulStack[currentDoc.id].length > 0) {
 					undoButton.disabled = false;
 				} else {
