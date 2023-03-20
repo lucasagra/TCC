@@ -1,3 +1,6 @@
+# Demo
+![gif](https://github.com/lucasagra/TCC/blob/main/entity_annotator_app/website-annotator.gif)
+
 # Instructions
 1 - Create a new directory for your project and navigate to it in the terminal.
 
