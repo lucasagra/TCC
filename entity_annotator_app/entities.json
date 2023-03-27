@@ -3,5 +3,7 @@
     "NoduleSize",
     "NoduleType",
     "NoduleLocation",
-    "NoduleCount"
+    "NoduleCount",
+    "NoduleInfo",
+    "NoduleDescription"
 ]

@@ -3,36 +3,44 @@ let selectedEntity = null;
 let statefulStack = {}
 let selectedListItem = null;
 
+
 function configureCheckbox(doc) {
-	checkbox = document.createElement("input");
+	const checkbox = document.createElement("input");
 	checkbox.type = "checkbox";
 	checkbox.style.float = "right"; // move checkbox to the right side
 	checkbox.checked = (doc.isDone === true || doc.isDone === 'true');
 	checkbox.addEventListener("change", function() {
-		fetch('/check', {
-			method: 'POST',
-			headers: {
-			'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				id : doc.id,
-				isChecked: this.checked
+		return new Promise((resolve, reject) => {
+			fetch('/check', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					id : doc.id,
+					isChecked: this.checked
+				})
+			}) 
+			.then(response => {
+				if (response.ok) {
+					if (this.checked) console.log("Successfully checked.");
+					else console.log("Successfully unchecked.");
+					resolve(); // resolve the promise
+				} else {
+					console.log(error);
+					reject(error); // reject the promise
+				}
 			})
-		}) 
-		.then(response => {
-			if (response.ok) {
-				if (this.checked) console.log("Successfully checked.");
-				else console.log("Successfully unchecked.");
-			} else {
-				console.log(error)
-			}
-		})
-		.catch(error => {
-			console.log(error)
+			.catch(error => {
+				console.log(error);
+				reject(error); // reject the promise
+			});
 		});
 	});
-	return checkbox
+		
+	return checkbox;
 }
+
 
 function configureListItem(doc, index) {
 	const listItem = document.createElement("li");
@@ -131,34 +139,40 @@ submitButton.addEventListener("click", () => {
 		currentDoc.report = document.getElementById("documentViewer").textContent;	
 
 		submitButton.disabled = true
-		fetch('/save', {
-			method: 'POST',
-			headers: {
-			  'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({
-				documentIndex: currentDoc.index,
-				report: currentDoc.report
-			})
-		  }) 
-		  .then(response => {
-			if (response.ok) {			
-				if (statefulStack[currentDoc.id].length > 0) { 
-					undoButton.disabled = false; 
-				}	
-				console.log("Successfully saved doc.")
-			} else {
-				const lastState = statefulStack[currentDoc.id].pop();	
-				// Undo html changes replacing with last saved state.
-				document.getElementById("documentViewer").textContent = lastState;
-				// Replace current state with last saved state.
-				currentDoc.report = lastState;
+		
+		new Promise((resolve, reject) => {
+			fetch('/save', {
+				method: 'POST',
+				headers: {
+				  'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					documentIndex: currentDoc.index,
+					report: currentDoc.report
+				})
+			  }) 
+			  .then(response => {
+				if (response.ok) {			
+					if (statefulStack[currentDoc.id].length > 0) { 
+						undoButton.disabled = false; 
+					}	
+					console.log("Successfully saved doc.")
+					resolve()
+				} else {
+					const lastState = statefulStack[currentDoc.id].pop();	
+					// Undo html changes replacing with last saved state.
+					document.getElementById("documentViewer").textContent = lastState;
+					// Replace current state with last saved state.
+					currentDoc.report = lastState;
+					console.log(error)
+					reject(error)
+				}
+			  })
+			  .catch(error => {
 				console.log(error)
-			}
-		  })
-		  .catch(error => {
-			console.log(error)
-		  });
+				reject(error)
+			  });
+		});
 	}
 });
 
@@ -167,31 +181,35 @@ const undoButton = document.getElementById("undoButton");
 undoButton.addEventListener("click", () => {
 	// Update current state with last state.
 	currentDoc.report = statefulStack[currentDoc.id].pop()
-
-	fetch('/save', {
-		method: 'POST',
-		headers: {
-		  'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({
-			documentIndex: currentDoc.index,
-			report: currentDoc.report
+	new Promise((resolve, reject) => {
+		fetch('/save', {
+			method: 'POST',
+			headers: {
+			'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				documentIndex: currentDoc.index,
+				report: currentDoc.report
+			})
+		}) 
+		.then(response => {
+			if (response.ok) {
+				// Update html with last state.
+				document.getElementById("documentViewer").textContent = currentDoc.report;
+				console.log("Successfully saved doc.")
+				resolve()
+			} else {
+				// Save last state back into the stack.
+				statefulStack[currentDoc.id].push(currentDoc.report)
+				console.log(error)
+				reject(error)
+			}
 		})
-	  }) 
-	  .then(response => {
-		if (response.ok) {
-			// Update html with last state.
-			document.getElementById("documentViewer").textContent = currentDoc.report;
-			console.log("Successfully saved doc.")
-		} else {
-			// Save last state back into the stack.
-			statefulStack[currentDoc.id].push(currentDoc.report)
+		.catch(error => {
 			console.log(error)
-		}
-	  })
-	  .catch(error => {
-		console.log(error)
-	  });
+			reject(error)
+		});
+	});
 	// Disable undo button if there isn't any saved state.
 	if (statefulStack[currentDoc.id].length <= 0) undoButton.disabled = true;
 });
