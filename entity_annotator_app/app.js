@@ -1,5 +1,5 @@
 const express = require("express");
-const fs = require("fs").promises;
+const fs = require("fs");
 const bodyParser = require("body-parser");
 const path = require('path');
 
@@ -31,7 +31,7 @@ app.get('/entities.json', (req, res) => {
 // Define route to retrieve a specific document.
 app.get('/documents/:id', async (req, res) => {
     const id = req.params.id;
-    const documents = JSON.parse(await fs.readFile(documentsFile));
+    const documents = JSON.parse(await fs.readFileSync(documentsFile));
     const document = documents.find(doc => doc.id === id);
   
     if (!document) {
@@ -43,12 +43,12 @@ app.get('/documents/:id', async (req, res) => {
 
 // Define route to check if a document is done.
 app.post("/check", async (req, res) => {
-    const { id, isChecked } = req.body;
+    const { documentIndex, isChecked } = req.body;
     try {
-        const documents = JSON.parse(await fs.readFile(documentsFile));
-        const doc = documents.find(doc => doc.id === id);
+        const documents = JSON.parse(fs.readFileSync(documentsFile));
+        const doc = documents[documentIndex];
         doc.isDone = isChecked;
-        await fs.writeFile(documentsFile, JSON.stringify(documents, null, 2));
+        fs.writeFileSync(documentsFile, JSON.stringify(documents, null, 2), { flag: 'w' });
         res.status(200).send("Document checked.");
     } catch (error) {
         console.error(error);
@@ -60,10 +60,10 @@ app.post("/check", async (req, res) => {
 app.post("/save", async (req, res) => {
     const { documentIndex, report } = req.body;
     try {
-        const documents = JSON.parse(await fs.readFile(documentsFile));
+        const documents = JSON.parse(fs.readFileSync(documentsFile));
         const doc = documents[documentIndex];
         doc.report = report;
-        await fs.writeFile(documentsFile, JSON.stringify(documents, null, 2));
+        fs.writeFileSync(documentsFile, JSON.stringify(documents, null, 2));
         res.status(200).send("Annotation saved.");
     } catch (error) {
         console.error(error);

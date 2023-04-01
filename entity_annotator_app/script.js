@@ -4,7 +4,7 @@ let statefulStack = {}
 let selectedListItem = null;
 
 
-function configureCheckbox(doc) {
+function configureCheckbox(doc, index) {
 	const checkbox = document.createElement("input");
 	checkbox.type = "checkbox";
 	checkbox.style.float = "right"; // move checkbox to the right side
@@ -17,7 +17,7 @@ function configureCheckbox(doc) {
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					id : doc.id,
+					documentIndex : index,
 					isChecked: this.checked
 				})
 			}) 
@@ -27,8 +27,8 @@ function configureCheckbox(doc) {
 					else console.log("Successfully unchecked.");
 					resolve(); // resolve the promise
 				} else {
-					console.log(error);
-					reject(error); // reject the promise
+					console.log("Something went wrong.");
+					reject(); // reject the promise
 				}
 			})
 			.catch(error => {
@@ -45,7 +45,7 @@ function configureCheckbox(doc) {
 function configureListItem(doc, index) {
 	const listItem = document.createElement("li");
 	listItem.innerText = `Report ${doc.id}`;
-	const checkbox = configureCheckbox(doc);
+	const checkbox = configureCheckbox(doc, index);
 	listItem.appendChild(checkbox);
 	listItem.addEventListener("click", () => {
 		fetch(`/documents/${doc.id}`)
@@ -164,8 +164,8 @@ submitButton.addEventListener("click", () => {
 					document.getElementById("documentViewer").textContent = lastState;
 					// Replace current state with last saved state.
 					currentDoc.report = lastState;
-					console.log(error)
-					reject(error)
+					console.log("Something went wrong.")
+					reject()
 				}
 			  })
 			  .catch(error => {
@@ -201,8 +201,8 @@ undoButton.addEventListener("click", () => {
 			} else {
 				// Save last state back into the stack.
 				statefulStack[currentDoc.id].push(currentDoc.report)
-				console.log(error)
-				reject(error)
+				console.log("Something went wrong.")
+				reject()
 			}
 		})
 		.catch(error => {
