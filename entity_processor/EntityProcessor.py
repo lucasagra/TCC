@@ -149,16 +149,18 @@ class EntityProcessor():
 
     def process(self):
         for medicalReport in self._input:
-            extracted_report, entities = _extract_entities_from_report(medicalReport['report'])
+            extracted_report, entities = self._extract_entities_from_report(medicalReport['report'])
             medicalReport['report'] = extracted_report
             medicalReport['entities'] = [entity.as_dict() for entity in entities]
-            print(medicalReport)
+            # print(medicalReport)
 
 if __name__ == '__main__':
     # Writes the JSON file
     with open('example.json', 'r', encoding='utf8') as f:
         data = json.load(f)
-        processor = EntityProcessor(data)
-        # processor.process()
-        processor._create_entity_unit_test()
+    processor = EntityProcessor(data)
+    processor.process()
+    with open('proccesed_example.json', 'w', encoding='utf8') as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+        # processor._create_entity_unit_test()
     
