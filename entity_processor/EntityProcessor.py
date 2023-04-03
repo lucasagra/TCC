@@ -39,7 +39,7 @@ class EntityProcessor():
     def __init__(self, data):
         self._input = data
 
-    def _create_entity_unit_test(self):
+    def _run_entity_extraction_unit_tests(self):
         string_example = "[Entity](this is the entity value)"
         (result_string, result_entities) = self._extract_entities_from_report(string_example)
         # print(result_entities[0].as_json())
@@ -113,7 +113,6 @@ class EntityProcessor():
     # Returns the modified report and a list of entities.
     @staticmethod
     def _extract_entities_from_report(string: str) -> (str, List[Entity]):
-
         entities = []
         start_indexes = []
         stack = []
@@ -140,7 +139,7 @@ class EntityProcessor():
                     prefix = string[:start]
                     suffix = string[i+1:]
                     value = string[start+len(removed):i]
-                    # Logically pre-compute the amount of characters that will be removed
+                    # Logically pre-compute the amount of characters that will be removed later
                     # on the prefix of this entity to get the real start index.
                     deep_level = len(list(filter(lambda x: len(x)>1, stack)))
                     adjustment = sum([len(to_remove)+1 for to_remove in stack if len(to_remove)>1]) - deep_level
@@ -183,7 +182,7 @@ class EntityProcessor():
                 raise InvalidReportError(f"Unbalanced brackets at report: {medicalReport['id']}")
 
     def process(self):
-        self._create_entity_unit_test()
+        self._run_entity_extraction_unit_tests()
         self._validate_reports()
         for medicalReport in self._input:
             if medicalReport['isDone'] == True:
