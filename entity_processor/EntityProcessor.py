@@ -127,7 +127,7 @@ class EntityProcessor():
             elif string[i] == "]":
                 entity_type = string[start_type:i]
             elif string[i] == "(":
-                if string[i-1] == "]":
+                if i > 0 and string[i-1] == "]":
                     stack.append("["+entity_type+"](")
                 else:
                     stack.append('(')
