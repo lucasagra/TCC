@@ -25,6 +25,12 @@ class Entity():
             'Value': self.value,
             'begin': self.begin,
         }
+
+class InvalidReportError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
+        self.message = message
+
 # Process the annotated entities that are in brackets format,
 # transforming the report back into their original version and
 # removing the annotated metadata into json key:value pairs.
@@ -146,21 +152,50 @@ class EntityProcessor():
             i += 1 
         return string, entities
 
+    # Make sure all reports are valid to be proccesed.
+    def _validate_reports(self):
+        for medicalReport in self._input:
+            report = medicalReport["report"]
+            par_stack = []
+            bracket_stack = []
+            for i, char in enumerate(report):
+                if char == "(":
+                    par_stack.append("(")
+                if char == ")":
+                    try:
+                        par_stack.pop()
+                    except IndexError:
+                        raise InvalidReportError(f"Unbalanced parenthesys at report: {medicalReport['id']}")
+                if char == "[":
+                    bracket_stack.append("[")
+                if char == "]":
+                    try:
+                        bracket_stack.pop()
+                        if report[i+1] != "(":
+                            raise InvalidReportError(f"Use of brackets outside entity annotation at report: {medicalReport['id']}")
+                    except IndexError:
+                        raise InvalidReportError(f"Unbalanced brackets at report: {medicalReport['id']}")
+            if len(par_stack) != 0:
+                raise InvalidReportError(f"Unbalanced parenthesys at report: {medicalReport['id']}")
+            if len(bracket_stack) != 0:
+                raise InvalidReportError(f"Unbalanced brackets at report: {medicalReport['id']}")
 
     def process(self):
+        self._create_entity_unit_test()
+        self._validate_reports()
         for medicalReport in self._input:
-            extracted_report, entities = self._extract_entities_from_report(medicalReport['report'])
-            medicalReport['report'] = extracted_report
-            medicalReport['entities'] = [entity.as_dict() for entity in entities]
-            # print(medicalReport)
+            if medicalReport['isDone'] == True:
+                extracted_report, entities = self._extract_entities_from_report(medicalReport['report'])
+                medicalReport['report'] = extracted_report
+                medicalReport['entities'] = [entity.as_dict() for entity in entities]
+                print("Proccessed report: ", medicalReport['id'])
 
 if __name__ == '__main__':
     # Writes the JSON file
-    with open('example.json', 'r', encoding='utf8') as f:
+    with open('documents.json', 'r', encoding='utf8') as f:
         data = json.load(f)
     processor = EntityProcessor(data)
     processor.process()
-    with open('proccesed_example.json', 'w', encoding='utf8') as f:
+    with open('proccesed_documents.json', 'w', encoding='utf8') as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
-        # processor._create_entity_unit_test()
     
