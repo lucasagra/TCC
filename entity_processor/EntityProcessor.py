@@ -148,7 +148,9 @@ class EntityProcessor():
                     entities.append(Entity(entity_type, value, start - adjustment))
                     # Update string after removal from deep to shallow.
                     string = prefix + value + suffix
-                    i -= (len(value)+len(removed))
+                    # Logically retract pointer to the same position after 
+                    # updating string.
+                    i = (start + len(value) - 1)
             i += 1 
         return string, entities
 
