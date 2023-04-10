@@ -11,3 +11,5 @@ python extract_data.py
 ```
 python clean_data.py
 ```
+
+4 - Done by hand: remove all unecessary `-` from the corpus using the regex `r" -[\w]"` on ctrl+f

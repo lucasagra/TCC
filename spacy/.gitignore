@@ -1,0 +1,10 @@
+# Ignore dataset
+*.csv
+*.json
+*.spacy
+
+# Ignore environment-specific files
+/.env
+
+# Ignore training output
+/output

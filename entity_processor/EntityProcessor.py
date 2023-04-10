@@ -9,21 +9,24 @@ class Entity():
         self.type = entity_type
         self.value = value
         self.begin = begin
+        self.end = begin+len(value)
 
     def as_json(self):
         return json.dumps(
             {
-             'Entity': self.type,
-             'Value': self.value,
-             'begin': self.begin
+             'entity': self.type,
+             'value': self.value,
+             'begin': self.begin,
+             'end': self.end
             },
             indent=2, ensure_ascii=False
         )
     def as_dict(self):
         return {
-            'Entity': self.type,
-            'Value': self.value,
+            'entity': self.type,
+            'value': self.value,
             'begin': self.begin,
+            'end': self.end
         }
 
 class InvalidReportError(Exception):
@@ -154,8 +157,10 @@ class EntityProcessor():
         return string, entities
 
     # Make sure all reports are valid to be proccesed.
-    def _validate_reports(self):
+    def _prevalidate_reports(self):
         for medicalReport in self._input:
+            if medicalReport["isDone"] != True:
+                continue
             report = medicalReport["report"]
             par_stack = []
             bracket_stack = []
@@ -181,15 +186,26 @@ class EntityProcessor():
             if len(bracket_stack) != 0:
                 raise InvalidReportError(f"Unbalanced brackets at report: {medicalReport['id']}")
 
+    def _postvalidate_reports(self):
+        for medicalReport in self._input:
+            if medicalReport['isDone'] != True:
+                continue
+            for entity in medicalReport["entities"]:
+                begin = entity["begin"]
+                if begin != 0 and medicalReport["report"][begin-1] not in [" ", ","]:
+                    print(f"Report: {medicalReport['id']} has the entity: '{entity['value']}' in invalid position: {begin}")  
+                    print(f"Previous character is: {medicalReport['report'][begin-1]}, must be space or comma.")
+
     def process(self):
         self._run_entity_extraction_unit_tests()
-        self._validate_reports()
+        self._prevalidate_reports()
         for medicalReport in self._input:
             if medicalReport['isDone'] == True:
                 extracted_report, entities = self._extract_entities_from_report(medicalReport['report'])
                 medicalReport['report'] = extracted_report
                 medicalReport['entities'] = [entity.as_dict() for entity in entities]
                 print("Proccessed report: ", medicalReport['id'])
+        self._postvalidate_reports()
 
 if __name__ == '__main__':
     # Writes the JSON file
@@ -197,6 +213,6 @@ if __name__ == '__main__':
         data = json.load(f)
     processor = EntityProcessor(data)
     processor.process()
-    with open('proccesed_documents.json', 'w', encoding='utf8') as f:
+    with open('processed_documents.json', 'w', encoding='utf8') as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
     
