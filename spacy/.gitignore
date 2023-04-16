@@ -5,6 +5,7 @@
 
 # Ignore environment-specific files
 /.env
+/env
 
 # Ignore training output
 /output
