@@ -8,4 +8,4 @@
 /env
 
 # Ignore training output
-/output
+/*output*
