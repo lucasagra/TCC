@@ -27,6 +27,9 @@ source env/bin/activate
 
 4 - Install Node.js and npm inside the virtual environment by running the following command:
 ```
+sudo apt update
+sudo apt install nodejs
+sudo apt install npm
 sudo npm install -g n
 n latest 
 ```
