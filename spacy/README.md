@@ -51,17 +51,17 @@ More info at https://spacy.io/usage/training#quickstart
 
 ## Training
 ```
-python -m spacy train config.cfg --gpu-id 0
+python -m spacy train config.cfg --gpu-id 0 --output=output
 ```
 
 # Testing model
 
-Run `python test_model_example.py --model=<model_path>`
+Run `python test_model_example.py --model=output/model-best --report="Nódulo não calcificado, contornos regulares, no segmento anterior do lobo superior esquerdo, medindo 0,3 cm, indeterminado."`
 
 Output example:
 
 ```
-Loading model  ./output/model-last ...
+Loading model  ./output/model-best ...
 
 Evaluating text:
 Nódulo não calcificado, contornos regulares, no segmento anterior do lobo superior esquerdo, medindo 0,3 cm, indeterminado.
