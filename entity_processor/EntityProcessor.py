@@ -195,6 +195,10 @@ class EntityProcessor():
                 if begin != 0 and medicalReport["report"][begin-1] not in [" ", ","]:
                     print(f"Report: {medicalReport['id']} has the entity: '{entity['value']}' in invalid position: {begin}")  
                     print(f"Previous character is: {medicalReport['report'][begin-1]}, must be space or comma.")
+                end = entity["end"]
+                if end < len(medicalReport["report"]) and medicalReport["report"][end] not in [" ", ",", ".", ";", "(", ")"]:
+                    print(f"Report: {medicalReport['id']} has the entity: '{entity['value']}' in invalid position: {end}")  
+                    print(f"Next character is: {medicalReport['report'][end]}, must be space or comma.")
 
     def process(self):
         self._run_entity_extraction_unit_tests()
