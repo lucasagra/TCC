@@ -67,9 +67,9 @@ Evaluating text:
 Nódulo não calcificado, contornos regulares, no segmento anterior do lobo superior esquerdo, medindo 0,3 cm, indeterminado.
 
 Entities found:
-NoduleCount    : 'Nódulo'                            (0, 6) 
-NoduleType     : 'não calcificado'                   (7, 22) 
-NoduleInfo     : 'contornos regulares'               (24, 43) 
-NoduleLocation : 'lobo superior esquerdo'            (69, 91) 
-NoduleSize     : '0,3 cm'                            (101, 107)
+NoduleCount    : 'Nódulo'                                      (0, 6) 
+NoduleType     : 'não calcificado'                             (7, 22) 
+NoduleInfo     : 'contornos regulares'                         (24, 43) 
+NoduleLocation : 'segmento anterior do lobo superior esquerdo' (48, 91) 
+NoduleSize     : '0,3 cm'                                      (101, 107) 
 ```
