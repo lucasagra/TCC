@@ -23,7 +23,8 @@ def adapt_dataset(dataset:str, eval_ratio:float, test_ratio:float, output:str):
   train_amount = int(train_ratio * len(full_data))
   test_amount = int(test_ratio * len(full_data))
   
-  # Shuffle dataset before train/eval/test partition.
+  # Shuffle dataset into train/eval/test partitions. 
+  # Test dataset is not used on training.
   random.shuffle(full_data)
 
   train_data = full_data[:train_amount]
