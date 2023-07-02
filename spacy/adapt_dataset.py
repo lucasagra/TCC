@@ -6,6 +6,7 @@ import random
 
 from spacy.tokens import DocBin
 
+# This adapts the .json corpus to the spacy v3 format: DocBin (.spacy). 
 def adapt_dataset(dataset:str, eval_ratio:float, test_ratio:float, output:str):
   nlp = spacy.blank("pt")
   print("Loading dataset from: ", dataset)
@@ -23,9 +24,8 @@ def adapt_dataset(dataset:str, eval_ratio:float, test_ratio:float, output:str):
   train_amount = int(train_ratio * len(full_data))
   test_amount = int(test_ratio * len(full_data))
   
-  # Shuffle dataset into train/eval/test partitions. 
-  # Test dataset is not used on training.
-  random.shuffle(full_data)
+  # Shuffle dataset and split train/eval/test partitions. 
+  random.Random(4).shuffle(full_data)
 
   train_data = full_data[:train_amount]
   test_data = full_data[train_amount:train_amount+test_amount]
@@ -63,24 +63,25 @@ def adapt_dataset(dataset:str, eval_ratio:float, test_ratio:float, output:str):
   print("Writing dev dataset to: ", dev_output)
   db.to_disk(dev_output)
 
-  db = DocBin()
-  for text, annotations in test_data:
-    doc = nlp(text)
-    ents = []
-    for start, end, label in annotations:
-        span = doc.char_span(start, end, label=label)
-        ents.append(span)
-    doc.ents = ents
-    db.add(doc)
-  test_output = os.path.join(output, "test.spacy")
-  print("Writing test dataset to: ", test_output)
-  db.to_disk(test_output)
+  if len(test_data) > 0:
+    db = DocBin()
+    for text, annotations in test_data:
+      doc = nlp(text)
+      ents = []
+      for start, end, label in annotations:
+          span = doc.char_span(start, end, label=label)
+          ents.append(span)
+      doc.ents = ents
+      db.add(doc)
+    test_output = os.path.join(output, "test.spacy")
+    print("Writing test dataset to: ", test_output)
+    db.to_disk(test_output)
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Adapt dataset to spacy format.')
     parser.add_argument('--input', help="Dataset's path", default='./corpus/processed_documents.json')
     parser.add_argument('--dev_ratio', help="Percentage of dataset used to validation.", default=0.2)
-    parser.add_argument('--test_ratio', help="Percentage of dataset used to test.", default=0.08)
+    parser.add_argument('--test_ratio', help="Percentage of dataset used to test.", default=0.0)
     parser.add_argument('--output', help="Output path", default='./corpus')
     return parser.parse_args()
 
