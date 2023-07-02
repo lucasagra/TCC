@@ -55,7 +55,7 @@ def print_model_misses(model: str, corpus:str, quantity_diff:bool):
 def parse_args():
     parser = argparse.ArgumentParser(description='Evaluate a NER model entity')
     parser.add_argument('--model', help="Model's path", default='./output/model-best')
-    parser.add_argument('--corpus', help="Corpus to evaluate", default='./corpus/test.spacy')
+    parser.add_argument('--corpus', help="Corpus to evaluate", default='./corpus/dev.spacy')
     parser.add_argument('--quantity_diff', help="Print when annotated count has diff", default=False)
     return parser.parse_args()
 
