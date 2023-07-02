@@ -34,4 +34,4 @@ Will become:
       }
     ]
 
-It is important to have both formats available since the first one is editable while the second one has the text report unchangeable due to the entities indexes.
+It is important to have both formats available since the first one is editable while the second one has the text report unchangeable due to the entities boundaries.
